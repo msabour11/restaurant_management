@@ -10,9 +10,6 @@
     </div>
 </div>
 
-<!-- QR code library -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-
 <style>
     .qr-header {
         text-align: center;
@@ -69,18 +66,25 @@
         color: #2D3250;
     }
 
-    .qr-card p {
+    .qr-card .qr-url {
         color: #888;
-        font-size: 12px;
+        font-size: 11px;
         margin: 0 0 15px;
+        word-break: break-all;
     }
 
-    .qr-canvas-wrap {
+    .qr-img-wrap {
         display: inline-block;
         padding: 12px;
         background: #fff;
         border: 3px solid #2D3250;
         border-radius: 12px;
+    }
+
+    .qr-img-wrap img {
+        display: block;
+        width: 180px;
+        height: 180px;
     }
 
     .qr-scan-text {
@@ -111,48 +115,39 @@
 </style>
 
 <script>
-    frappe.ready(function () {
-        frappe.call({
-            method: "restaurant_management.restaurant_management.guest_api.get_table_qr_data",
-            callback: function (r) {
-                if (r.message) renderQRCodes(r.message);
-            }
-        });
+frappe.ready(function() {
+	frappe.call({
+		method: "restaurant_management.restaurant_management.guest_api.get_table_qr_data",
+		callback: function(r) {
+			if (r.message) renderQRCodes(r.message);
+		}
+	});
 
-        function renderQRCodes(tables) {
-            let html = `
+	function renderQRCodes(tables) {
+		let html = `
 			<div class="qr-header">
 				<h1>📱 Table QR Codes</h1>
 				<p>Print these and place on each table for self-ordering</p>
 				<button class="qr-print-all no-print" onclick="window.print()">🖨️ Print All QR Codes</button>
 			</div>
 			<div class="qr-grid">
-				${tables.map(t => `
-					<div class="qr-card">
-						<h3>🪑 Table ${t.table_number}</h3>
-						<p>${t.order_url}</p>
-						<div class="qr-canvas-wrap">
-							<canvas id="qr-${t.name}"></canvas>
+				${tables.map(t => {
+					let qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=2D3250&data=" + encodeURIComponent(t.order_url);
+					return `
+						<div class="qr-card">
+							<h3>🪑 Table ${t.table_number}</h3>
+							<p class="qr-url">${t.order_url}</p>
+							<div class="qr-img-wrap">
+								<img src="${qrUrl}" alt="QR Code Table ${t.table_number}" />
+							</div>
+							<span class="qr-scan-text">Scan to Order 📱</span>
 						</div>
-						<span class="qr-scan-text">Scan to Order 📱</span>
-					</div>
-				`).join("")}
+					`;
+				}).join("")}
 			</div>
 		`;
-
-            document.getElementById("qr-app").innerHTML = html;
-
-            // Generate QR codes
-            tables.forEach(t => {
-                if (typeof QRCode !== "undefined") {
-                    QRCode.toCanvas(document.getElementById(`qr-${t.name}`), t.order_url, {
-                        width: 180,
-                        margin: 1,
-                        color: { dark: "#2D3250", light: "#ffffff" },
-                    });
-                }
-            });
-        }
-    });
+		document.getElementById("qr-app").innerHTML = html;
+	}
+});
 </script>
 {% endblock %}
