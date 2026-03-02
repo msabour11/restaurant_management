@@ -3,8 +3,11 @@
 {% block title %}Order Now{% endblock %}
 
 {% block page_content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
 <div id="guest-order-app" data-table="{{ table }}" data-order="{{ existing_order }}">
-    <!-- Loading -->
     <div id="go-loading" style="text-align:center;padding:60px 20px;">
         <div class="spinner-border text-primary" role="status"></div>
         <p style="margin-top:15px;color:#888;">Loading menu...</p>
@@ -13,331 +16,611 @@
 
 <style>
     :root {
-        --go-primary: #2D3250;
+        --go-bg: #0F0F14;
+        --go-surface: #1A1A24;
+        --go-surface2: #23232F;
+        --go-border: rgba(255, 255, 255, 0.06);
+        --go-text: #EAEAF0;
+        --go-text2: #9B9BAF;
         --go-accent: #F6B17A;
-        --go-accent-dark: #E8985E;
-        --go-bg: #f8f9fa;
-        --go-card: #fff;
-        --go-text: #333;
-        --go-muted: #888;
-        --go-success: #7DCE94;
-        --go-radius: 14px;
+        --go-accent2: #E8985E;
+        --go-green: #4ADE80;
+        --go-red: #F87171;
+        --go-glass: rgba(255, 255, 255, 0.04);
+        --go-radius: 16px;
+        --go-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    * {
-        box-sizing: border-box;
+    #guest-order-app {
+        font-family: var(--go-font);
     }
 
-    .go-header {
-        background: linear-gradient(135deg, var(--go-primary), #424769);
+    /* ===== HERO HEADER ===== */
+    .go-hero {
+        position: relative;
+        background: linear-gradient(145deg, #1C1C2E 0%, #2D1F3D 50%, #1A1A24 100%);
+        padding: 32px 24px 28px;
+        margin: -20px -15px 0;
+        overflow: hidden;
+    }
+
+    .go-hero::before {
+        content: '';
+        position: absolute;
+        top: -60px;
+        right: -40px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(246, 177, 122, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .go-hero::after {
+        content: '';
+        position: absolute;
+        bottom: -80px;
+        left: -60px;
+        width: 250px;
+        height: 250px;
+        background: radial-gradient(circle, rgba(147, 130, 220, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .go-hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .go-hero h1 {
         color: #fff;
-        padding: 20px 24px;
-        text-align: center;
-        border-radius: 0 0 24px 24px;
-        margin: -20px -15px 20px;
-    }
-
-    .go-header h1 {
         margin: 0;
-        font-size: 22px;
-        font-weight: 800;
+        font-size: 26px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
     }
 
-    .go-header p {
-        margin: 5px 0 0;
-        opacity: 0.7;
+    .go-hero-sub {
+        color: rgba(255, 255, 255, 0.5);
         font-size: 13px;
+        margin: 6px 0 0;
+        font-weight: 500;
     }
 
-    .go-table-badge {
-        display: inline-block;
-        background: var(--go-accent);
-        color: var(--go-primary);
-        padding: 4px 14px;
-        border-radius: 20px;
+    .go-badge-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 14px;
+        flex-wrap: wrap;
+    }
+
+    .go-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 14px;
+        border-radius: 100px;
+        font-size: 12px;
         font-weight: 700;
-        font-size: 13px;
-        margin-top: 8px;
+        backdrop-filter: blur(10px);
     }
 
-    /* Categories */
-    .go-categories {
+    .go-badge-table {
+        background: rgba(246, 177, 122, 0.15);
+        color: var(--go-accent);
+        border: 1px solid rgba(246, 177, 122, 0.25);
+    }
+
+    .go-badge-add {
+        background: rgba(74, 222, 128, 0.15);
+        color: var(--go-green);
+        border: 1px solid rgba(74, 222, 128, 0.25);
+    }
+
+    /* ===== SEARCH BAR ===== */
+    .go-search-wrap {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: var(--go-bg);
+        padding: 16px 10px 0;
+        margin: 0 -15px;
+    }
+
+    .go-search {
+        width: 100%;
+        padding: 12px 16px 12px 42px;
+        background: var(--go-surface);
+        border: 1px solid var(--go-border);
+        border-radius: 14px;
+        color: var(--go-text);
+        font-size: 14px;
+        font-family: var(--go-font);
+        outline: none;
+        transition: border-color 0.3s;
+    }
+
+    .go-search:focus {
+        border-color: var(--go-accent);
+    }
+
+    .go-search::placeholder {
+        color: var(--go-text2);
+    }
+
+    .go-search-icon {
+        position: absolute;
+        left: 25px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--go-text2);
+        font-size: 15px;
+        pointer-events: none;
+    }
+
+    .go-search-wrap .go-search-inner {
+        position: relative;
+    }
+
+    /* ===== CATEGORIES ===== */
+    .go-cats {
         display: flex;
         gap: 8px;
         overflow-x: auto;
-        padding: 0 5px 15px;
+        padding: 14px 10px 6px;
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
     }
 
-    .go-cat-btn {
+    .go-cats::-webkit-scrollbar {
+        display: none;
+    }
+
+    .go-cat {
         padding: 8px 18px;
-        border-radius: 25px;
-        border: 2px solid #eee;
-        background: #fff;
-        color: var(--go-muted);
+        border-radius: 100px;
+        background: var(--go-surface);
+        border: 1px solid var(--go-border);
+        color: var(--go-text2);
         font-weight: 600;
         font-size: 13px;
         white-space: nowrap;
         cursor: pointer;
         transition: all 0.3s;
+        font-family: var(--go-font);
     }
 
-    .go-cat-btn.active {
-        background: var(--go-primary);
-        border-color: var(--go-primary);
-        color: #fff;
-    }
-
-    /* Menu items */
-    .go-items {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        padding: 0 5px;
-    }
-
-    .go-item-card {
-        background: var(--go-card);
-        border-radius: var(--go-radius);
-        padding: 14px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s;
-        cursor: pointer;
-        position: relative;
-    }
-
-    .go-item-card:active {
-        transform: scale(0.97);
-    }
-
-    .go-item-img {
-        width: 100%;
-        height: 90px;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #f0f0f0, #e8e8e8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ccc;
-        font-size: 28px;
-        margin-bottom: 10px;
-        background-size: cover;
-        background-position: center;
-    }
-
-    .go-item-name {
-        font-weight: 700;
-        font-size: 13px;
+    .go-cat:hover {
+        border-color: rgba(246, 177, 122, 0.3);
         color: var(--go-text);
     }
 
-    .go-item-price {
-        font-weight: 800;
-        font-size: 15px;
-        color: var(--go-primary);
-        margin-top: 4px;
+    .go-cat.active {
+        background: linear-gradient(135deg, var(--go-accent), var(--go-accent2));
+        border-color: transparent;
+        color: #1A1A24;
     }
 
-    .go-item-add {
+    /* ===== MENU GRID ===== */
+    .go-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 10px;
+    }
+
+    .go-card {
+        background: var(--go-surface);
+        border: 1px solid var(--go-border);
+        border-radius: var(--go-radius);
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .go-card:hover {
+        border-color: rgba(246, 177, 122, 0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .go-card:active {
+        transform: scale(0.97);
+    }
+
+    .go-card-img {
+        width: 100%;
+        height: 110px;
+        background: linear-gradient(135deg, var(--go-surface2), #2A2A3A);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    .go-card-img::after {
+        content: '';
         position: absolute;
-        bottom: 12px;
-        right: 12px;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: var(--go-accent);
-        color: var(--go-primary);
-        border: none;
-        font-weight: bold;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: linear-gradient(transparent, var(--go-surface));
+    }
+
+    .go-card-body {
+        padding: 10px 14px 14px;
+    }
+
+    .go-card-name {
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--go-text);
+        line-height: 1.3;
+        margin-bottom: 6px;
+    }
+
+    .go-card-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .go-card-price {
+        font-weight: 900;
         font-size: 16px;
+        background: linear-gradient(135deg, var(--go-accent), var(--go-accent2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .go-card-add {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--go-accent), var(--go-accent2));
+        color: #1A1A24;
+        border: none;
+        font-weight: 900;
+        font-size: 18px;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: transform 0.2s;
+        font-family: var(--go-font);
     }
 
-    /* Cart */
-    .go-cart-bar {
+    .go-card-add:hover {
+        transform: scale(1.1);
+    }
+
+    /* Pulse animation on add */
+    @keyframes cardPulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(246, 177, 122, 0.4);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(246, 177, 122, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(246, 177, 122, 0);
+        }
+    }
+
+    .go-card.added {
+        animation: cardPulse 0.5s ease;
+    }
+
+    /* ===== CART BAR (Bottom) ===== */
+    .go-bar {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        background: var(--go-primary);
-        color: #fff;
+        background: linear-gradient(135deg, #1C1C2E, #2D1F3D);
+        backdrop-filter: blur(20px);
         padding: 14px 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        z-index: 1000;
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
-        transition: transform 0.3s;
-    }
-
-    .go-cart-bar.hidden {
+        z-index: 100;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
         transform: translateY(100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .go-cart-info {
-        font-size: 14px;
-    }
-
-    .go-cart-info strong {
-        font-size: 17px;
-    }
-
-    .go-cart-btn {
-        padding: 10px 24px;
-        background: var(--go-accent);
-        color: var(--go-primary);
-        border: none;
-        border-radius: 10px;
-        font-weight: 700;
-        font-size: 14px;
-        cursor: pointer;
-    }
-
-    /* Cart panel */
-    .go-cart-panel {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: #fff;
-        border-radius: 20px 20px 0 0;
-        padding: 24px 20px;
-        box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
-        z-index: 1001;
-        max-height: 80vh;
-        overflow-y: auto;
-        transform: translateY(100%);
-        transition: transform 0.3s;
-    }
-
-    .go-cart-panel.open {
+    .go-bar.visible {
         transform: translateY(0);
     }
 
-    .go-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        display: none;
+    .go-bar-info {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 13px;
+        font-weight: 500;
     }
 
-    .go-overlay.open {
-        display: block;
-    }
-
-    .go-cart-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .go-cart-header h3 {
-        margin: 0;
+    .go-bar-info strong {
+        color: #fff;
+        font-size: 18px;
         font-weight: 800;
     }
 
-    .go-cart-close {
-        background: none;
+    .go-bar-btn {
+        padding: 10px 28px;
+        background: linear-gradient(135deg, var(--go-accent), var(--go-accent2));
+        color: #1A1A24;
         border: none;
-        font-size: 22px;
-        cursor: pointer;
-        color: #888;
-    }
-
-    .go-cart-item {
-        display: flex;
-        align-items: center;
-        padding: 12px 0;
-        border-bottom: 1px solid #f0f0f0;
-        gap: 12px;
-    }
-
-    .go-cart-item-name {
-        flex: 1;
-        font-weight: 600;
+        border-radius: 12px;
+        font-weight: 800;
         font-size: 14px;
+        cursor: pointer;
+        font-family: var(--go-font);
+        transition: transform 0.2s;
     }
 
-    .go-cart-item-qty {
+    .go-bar-btn:hover {
+        transform: scale(1.03);
+    }
+
+    /* ===== CART PANEL (Slide-up) ===== */
+    .go-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 200;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+    }
+
+    .go-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .go-panel {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--go-surface);
+        border-radius: 24px 24px 0 0;
+        padding: 24px 20px 32px;
+        z-index: 201;
+        max-height: 85vh;
+        overflow-y: auto;
+        transform: translateY(100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .go-panel.open {
+        transform: translateY(0);
+    }
+
+    .go-panel-handle {
+        width: 40px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 2px;
+        margin: 0 auto 18px;
+    }
+
+    .go-panel-head {
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        gap: 8px;
+        margin-bottom: 16px;
     }
 
-    .go-qty-btn {
-        width: 28px;
-        height: 28px;
-        border-radius: 6px;
-        border: 2px solid #eee;
-        background: #fff;
-        font-weight: bold;
+    .go-panel-head h3 {
+        margin: 0;
+        font-weight: 800;
+        font-size: 18px;
+        color: var(--go-text);
+    }
+
+    .go-panel-close {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        background: var(--go-glass);
+        border: 1px solid var(--go-border);
+        color: var(--go-text2);
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 16px;
     }
 
-    .go-cart-item-total {
+    /* Cart items */
+    .go-ci {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--go-border);
+        gap: 12px;
+    }
+
+    .go-ci-name {
+        flex: 1;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--go-text);
+    }
+
+    .go-ci-qty {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .go-ci-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: var(--go-glass);
+        border: 1px solid var(--go-border);
+        color: var(--go-text);
         font-weight: 700;
-        color: var(--go-primary);
-        min-width: 60px;
-        text-align: right;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--go-font);
+        transition: background 0.2s;
     }
 
-    .go-cart-total {
+    .go-ci-btn:hover {
+        background: rgba(246, 177, 122, 0.15);
+    }
+
+    .go-ci-val {
+        font-weight: 800;
+        min-width: 20px;
+        text-align: center;
+        color: var(--go-text);
+        font-size: 14px;
+    }
+
+    .go-ci-total {
+        font-weight: 800;
+        color: var(--go-accent);
+        min-width: 65px;
+        text-align: right;
+        font-size: 14px;
+    }
+
+    .go-panel-total {
         display: flex;
         justify-content: space-between;
-        padding: 15px 0;
-        font-size: 18px;
-        font-weight: 800;
-        border-top: 2px solid var(--go-primary);
-        margin-top: 10px;
+        padding: 16px 0;
+        font-size: 20px;
+        font-weight: 900;
+        color: var(--go-text);
+        border-top: 2px solid var(--go-border);
+        margin-top: 8px;
     }
 
-    /* Customer name input */
-    .go-customer-input {
-        width: 100%;
-        padding: 10px 14px;
-        border: 2px solid #eee;
-        border-radius: 10px;
-        font-size: 14px;
-        margin-bottom: 12px;
+    .go-panel-total .go-highlight {
+        background: linear-gradient(135deg, var(--go-accent), var(--go-accent2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
-    .go-place-order {
+    /* Inputs */
+    .go-input {
         width: 100%;
-        padding: 14px;
-        background: linear-gradient(135deg, var(--go-accent), var(--go-accent-dark));
-        color: var(--go-primary);
-        border: none;
+        padding: 12px 16px;
+        background: var(--go-glass);
+        border: 1px solid var(--go-border);
         border-radius: 12px;
-        font-weight: 800;
+        color: var(--go-text);
+        font-size: 14px;
+        font-family: var(--go-font);
+        margin-bottom: 10px;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+
+    .go-input:focus {
+        border-color: var(--go-accent);
+    }
+
+    .go-input::placeholder {
+        color: var(--go-text2);
+    }
+
+    .go-submit {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--go-accent), var(--go-accent2));
+        color: #1A1A24;
+        border: none;
+        border-radius: 14px;
+        font-weight: 900;
         font-size: 16px;
         cursor: pointer;
+        font-family: var(--go-font);
+        transition: transform 0.2s, box-shadow 0.3s;
+        margin-top: 6px;
     }
 
-    .go-place-order:disabled {
-        opacity: 0.5;
+    .go-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 25px rgba(246, 177, 122, 0.3);
+    }
+
+    .go-submit:disabled {
+        opacity: 0.4;
         cursor: not-allowed;
+        transform: none;
     }
 
-    /* Spacer for cart bar */
     .go-spacer {
-        height: 80px;
+        height: 85px;
     }
 
-    @media (min-width: 600px) {
-        .go-items {
+    /* ===== DESKTOP LAYOUT ===== */
+    @media (min-width: 768px) {
+        .go-grid {
             grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
         }
+
+        .go-card-img {
+            height: 140px;
+        }
+
+        .go-hero {
+            padding: 40px 32px 36px;
+            margin: -20px -15px 0;
+        }
+
+        .go-hero h1 {
+            font-size: 32px;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .go-grid {
+            grid-template-columns: repeat(4, 1fr);
+            padding: 10px 20px;
+        }
+
+        .go-cats {
+            padding: 14px 20px 6px;
+        }
+
+        .go-search-wrap {
+            padding: 16px 20px 0;
+        }
+
+        .go-panel {
+            max-width: 480px;
+            left: auto;
+            right: 20px;
+            border-radius: 24px 24px 0 0;
+        }
+    }
+
+    /* Page background */
+    body,
+    .main-section {
+        background: var(--go-bg) !important;
+    }
+
+    .page-content-wrapper {
+        padding-top: 0 !important;
     }
 </style>
 
@@ -350,8 +633,8 @@
         let menuData = {};
         let currency = "₹";
         let cartOpen = false;
+        let allItems = [];
 
-        // Load menu
         frappe.call({
             method: "restaurant_management.restaurant_management.guest_api.get_guest_menu",
             args: { table: table || "" },
@@ -359,6 +642,7 @@
                 if (r.message) {
                     currency = r.message.currency_symbol;
                     menuData = r.message.menu;
+                    allItems = Object.values(menuData).flat();
                     renderApp(r.message);
                 }
             }
@@ -369,87 +653,116 @@
             let tableInfo = data.table;
 
             let html = `
-			<div class="go-header">
-				<h1>🍽️ ${data.restaurant_name}</h1>
-				<p>${data.address || "Welcome! Browse our menu & order"}</p>
-				${tableInfo ? `<div class="go-table-badge">🪑 Table ${tableInfo.table_number}</div>` : ""}
-				${isAddMode ? `<div class="go-table-badge" style="background:#7DCE94;">➕ Adding to ${existingOrder}</div>` : ""}
-			</div>
+            <div class="go-hero">
+                <div class="go-hero-content">
+                    <h1>${data.restaurant_name}</h1>
+                    <div class="go-hero-sub">${data.address || "Browse menu & order instantly"}</div>
+                    <div class="go-badge-row">
+                        ${tableInfo ? `<span class="go-badge go-badge-table">🪑 Table ${tableInfo.table_number}</span>` : ""}
+                        ${isAddMode ? `<span class="go-badge go-badge-add">➕ Adding to ${existingOrder}</span>` : ""}
+                    </div>
+                </div>
+            </div>
 
-			<div class="go-categories" id="go-categories">
-				${categories.map((c, i) => `<button class="go-cat-btn ${i === 0 ? 'active' : ''}" data-cat="${c}">${c}</button>`).join("")}
-			</div>
+            <div class="go-search-wrap">
+                <div class="go-search-inner">
+                    <span class="go-search-icon">🔍</span>
+                    <input type="text" class="go-search" id="go-search" placeholder="Search dishes...">
+                </div>
+            </div>
 
-			<div class="go-items" id="go-items"></div>
+            <div class="go-cats" id="go-cats">
+                ${categories.map((c, i) => `<button class="go-cat ${i === 0 ? 'active' : ''}" data-cat="${c}">${c}</button>`).join("")}
+            </div>
 
-			<div class="go-spacer"></div>
+            <div class="go-grid" id="go-grid"></div>
 
-			<div class="go-cart-bar hidden" id="go-cart-bar">
-				<div class="go-cart-info">
-					<span id="go-cart-count">0 items</span> •
-					<strong id="go-cart-total">${currency}0</strong>
-				</div>
-				<button class="go-cart-btn" id="go-view-cart">View Cart →</button>
-			</div>
+            <div class="go-spacer"></div>
 
-			<div class="go-overlay" id="go-overlay"></div>
-			<div class="go-cart-panel" id="go-cart-panel">
-				<div class="go-cart-header">
-					<h3>🛒 Your Order</h3>
-					<button class="go-cart-close" id="go-cart-close">✕</button>
-				</div>
-				<div id="go-cart-items"></div>
-				<div class="go-cart-total">
-					<span>Total</span>
-					<span id="go-panel-total">${currency}0</span>
-				</div>
-				<input type="text" class="go-customer-input" id="go-customer-name" placeholder="Your name (optional)">
-				<textarea class="go-customer-input" id="go-notes" placeholder="Special instructions (optional)" rows="2" style="resize:none;"></textarea>
-				<button class="go-place-order" id="go-place-btn">${isAddMode ? 'Add to Order' : 'Place Order'}</button>
-			</div>
-		`;
-            document.getElementById("go-loading").remove();
+            <div class="go-bar" id="go-bar">
+                <div class="go-bar-info">
+                    <span id="go-bar-count">0 items</span> ·
+                    <strong id="go-bar-total">${currency}0</strong>
+                </div>
+                <button class="go-bar-btn" id="go-view-cart">View Cart →</button>
+            </div>
+
+            <div class="go-overlay" id="go-overlay"></div>
+            <div class="go-panel" id="go-panel">
+                <div class="go-panel-handle"></div>
+                <div class="go-panel-head">
+                    <h3>🛒 Your Order</h3>
+                    <button class="go-panel-close" id="go-panel-close">✕</button>
+                </div>
+                <div id="go-panel-items"></div>
+                <div class="go-panel-total">
+                    <span>Total</span>
+                    <span class="go-highlight" id="go-panel-total">${currency}0</span>
+                </div>
+                <input type="text" class="go-input" id="go-cust-name" placeholder="Your name (optional)">
+                <textarea class="go-input" id="go-notes" placeholder="Special instructions..." rows="2" style="resize:none;"></textarea>
+                <button class="go-submit" id="go-submit">${isAddMode ? '➕ Add to Order' : '✅ Place Order'}</button>
+            </div>
+        `;
+
             document.getElementById("guest-order-app").innerHTML = html;
 
-            // Render first category
             if (categories.length) renderItems(categories[0]);
 
             // Category clicks
-            document.querySelectorAll(".go-cat-btn").forEach(btn => {
+            document.querySelectorAll(".go-cat").forEach(btn => {
                 btn.addEventListener("click", function () {
-                    document.querySelectorAll(".go-cat-btn").forEach(b => b.classList.remove("active"));
+                    document.querySelectorAll(".go-cat").forEach(b => b.classList.remove("active"));
                     this.classList.add("active");
                     renderItems(this.dataset.cat);
                 });
             });
 
-            // Cart bar click
-            document.getElementById("go-view-cart").addEventListener("click", toggleCart);
-            document.getElementById("go-cart-close").addEventListener("click", toggleCart);
-            document.getElementById("go-overlay").addEventListener("click", toggleCart);
+            // Search
+            document.getElementById("go-search").addEventListener("input", function () {
+                let q = this.value.toLowerCase().trim();
+                if (!q) {
+                    let activeCat = document.querySelector(".go-cat.active");
+                    if (activeCat) renderItems(activeCat.dataset.cat);
+                    return;
+                }
+                let filtered = allItems.filter(i => i.item_name.toLowerCase().includes(q));
+                renderItemsList(filtered);
+            });
 
-            // Place order
-            document.getElementById("go-place-btn").addEventListener("click", placeOrder);
+            // Cart actions
+            document.getElementById("go-view-cart").addEventListener("click", toggleCart);
+            document.getElementById("go-panel-close").addEventListener("click", toggleCart);
+            document.getElementById("go-overlay").addEventListener("click", toggleCart);
+            document.getElementById("go-submit").addEventListener("click", placeOrder);
         }
 
         function renderItems(category) {
-            let items = menuData[category] || [];
-            let container = document.getElementById("go-items");
-            container.innerHTML = items.map(item => `
-			<div class="go-item-card" data-item="${item.name}" data-name="${item.item_name}" data-price="${item.price}">
-				<div class="go-item-img" ${item.image ? `style="background-image:url(${item.image})"` : ""}>
-					${!item.image ? "🍽️" : ""}
-				</div>
-				<div class="go-item-name">${item.item_name}</div>
-				<div class="go-item-price">${currency}${parseFloat(item.price).toFixed(2)}</div>
-				<button class="go-item-add">+</button>
-			</div>
-		`).join("");
+            renderItemsList(menuData[category] || []);
+        }
 
-            // Add click handlers
-            container.querySelectorAll(".go-item-card").forEach(card => {
+        function renderItemsList(items) {
+            let container = document.getElementById("go-grid");
+            container.innerHTML = items.map(item => `
+                <div class="go-card" data-item="${item.name}" data-name="${item.item_name}" data-price="${item.price}">
+                    <div class="go-card-img" ${item.image ? `style="background-image:url(${item.image})"` : ""}>
+                        ${!item.image ? "🍽️" : ""}
+                    </div>
+                    <div class="go-card-body">
+                        <div class="go-card-name">${item.item_name}</div>
+                        <div class="go-card-bottom">
+                            <div class="go-card-price">${currency}${parseFloat(item.price).toFixed(0)}</div>
+                            <button class="go-card-add">+</button>
+                        </div>
+                    </div>
+                </div>
+            `).join("");
+
+            container.querySelectorAll(".go-card").forEach(card => {
                 card.addEventListener("click", function () {
                     addToCart(this.dataset.item, this.dataset.name, parseFloat(this.dataset.price));
+                    this.classList.add("added");
+                    setTimeout(() => this.classList.remove("added"), 500);
                 });
             });
         }
@@ -461,8 +774,6 @@
                 cart[id] = { menu_item: id, name: name, price: price, qty: 1 };
             }
             updateCartUI();
-            // Quick feedback
-            frappe.show_alert({ message: `${name} added`, indicator: "green" });
         }
 
         function updateCartUI() {
@@ -470,33 +781,27 @@
             let totalQty = items.reduce((s, i) => s + i.qty, 0);
             let totalAmt = items.reduce((s, i) => s + (i.price * i.qty), 0);
 
-            let bar = document.getElementById("go-cart-bar");
-            if (totalQty > 0) {
-                bar.classList.remove("hidden");
-            } else {
-                bar.classList.add("hidden");
-            }
+            let bar = document.getElementById("go-bar");
+            bar.classList.toggle("visible", totalQty > 0);
 
-            document.getElementById("go-cart-count").textContent = `${totalQty} item${totalQty !== 1 ? 's' : ''}`;
-            document.getElementById("go-cart-total").textContent = `${currency}${totalAmt.toFixed(2)}`;
+            document.getElementById("go-bar-count").textContent = `${totalQty} item${totalQty !== 1 ? 's' : ''}`;
+            document.getElementById("go-bar-total").textContent = `${currency}${totalAmt.toFixed(2)}`;
             document.getElementById("go-panel-total").textContent = `${currency}${totalAmt.toFixed(2)}`;
 
-            // Render cart items in panel
-            let cartContainer = document.getElementById("go-cart-items");
-            cartContainer.innerHTML = items.map(item => `
-			<div class="go-cart-item" data-id="${item.menu_item}">
-				<div class="go-cart-item-name">${item.name}</div>
-				<div class="go-cart-item-qty">
-					<button class="go-qty-btn go-minus" data-id="${item.menu_item}">−</button>
-					<span>${item.qty}</span>
-					<button class="go-qty-btn go-plus" data-id="${item.menu_item}">+</button>
-				</div>
-				<div class="go-cart-item-total">${currency}${(item.price * item.qty).toFixed(2)}</div>
-			</div>
-		`).join("");
+            let pc = document.getElementById("go-panel-items");
+            pc.innerHTML = items.map(item => `
+                <div class="go-ci" data-id="${item.menu_item}">
+                    <div class="go-ci-name">${item.name}</div>
+                    <div class="go-ci-qty">
+                        <button class="go-ci-btn go-ci-minus" data-id="${item.menu_item}">−</button>
+                        <span class="go-ci-val">${item.qty}</span>
+                        <button class="go-ci-btn go-ci-plus" data-id="${item.menu_item}">+</button>
+                    </div>
+                    <div class="go-ci-total">${currency}${(item.price * item.qty).toFixed(2)}</div>
+                </div>
+            `).join("");
 
-            // Bind +/- buttons
-            cartContainer.querySelectorAll(".go-minus").forEach(btn => {
+            pc.querySelectorAll(".go-ci-minus").forEach(btn => {
                 btn.addEventListener("click", function (e) {
                     e.stopPropagation();
                     let id = this.dataset.id;
@@ -505,7 +810,7 @@
                     updateCartUI();
                 });
             });
-            cartContainer.querySelectorAll(".go-plus").forEach(btn => {
+            pc.querySelectorAll(".go-ci-plus").forEach(btn => {
                 btn.addEventListener("click", function (e) {
                     e.stopPropagation();
                     cart[this.dataset.id].qty += 1;
@@ -516,7 +821,7 @@
 
         function toggleCart() {
             cartOpen = !cartOpen;
-            document.getElementById("go-cart-panel").classList.toggle("open", cartOpen);
+            document.getElementById("go-panel").classList.toggle("open", cartOpen);
             document.getElementById("go-overlay").classList.toggle("open", cartOpen);
         }
 
@@ -524,33 +829,25 @@
             let items = Object.values(cart);
             if (!items.length) return;
 
-            let btn = document.getElementById("go-place-btn");
+            let btn = document.getElementById("go-submit");
             btn.disabled = true;
             btn.textContent = isAddMode ? "Adding items..." : "Placing order...";
 
             let orderItems = items.map(i => ({ menu_item: i.menu_item, quantity: i.qty }));
 
             if (isAddMode) {
-                // APPEND mode — add items to existing order
                 frappe.call({
                     method: "restaurant_management.restaurant_management.guest_api.add_items_to_order",
-                    args: {
-                        order_name: existingOrder,
-                        items: JSON.stringify(orderItems),
-                    },
+                    args: { order_name: existingOrder, items: JSON.stringify(orderItems) },
                     callback: function (r) {
                         if (r.message && r.message.status === "success") {
                             window.location.href = `/restaurant/status?order=${existingOrder}`;
                         }
                     },
-                    error: function () {
-                        btn.disabled = false;
-                        btn.textContent = "Add to Order";
-                    }
+                    error: function () { btn.disabled = false; btn.textContent = "➕ Add to Order"; }
                 });
             } else {
-                // NEW order mode
-                let customerName = document.getElementById("go-customer-name").value;
+                let customerName = document.getElementById("go-cust-name").value;
                 let notes = document.getElementById("go-notes").value;
 
                 frappe.call({
@@ -566,10 +863,7 @@
                             window.location.href = `/restaurant/status?order=${r.message.order_name}`;
                         }
                     },
-                    error: function () {
-                        btn.disabled = false;
-                        btn.textContent = "Place Order";
-                    }
+                    error: function () { btn.disabled = false; btn.textContent = "✅ Place Order"; }
                 });
             }
         }
