@@ -3,7 +3,7 @@
 {% block title %}Order Now{% endblock %}
 
 {% block page_content %}
-<div id="guest-order-app" data-table="{{ table }}">
+<div id="guest-order-app" data-table="{{ table }}" data-order="{{ existing_order }}">
     <!-- Loading -->
     <div id="go-loading" style="text-align:center;padding:60px 20px;">
         <div class="spinner-border text-primary" role="status"></div>
@@ -344,6 +344,8 @@
 <script>
     frappe.ready(function () {
         const table = document.getElementById("guest-order-app").dataset.table;
+        const existingOrder = document.getElementById("guest-order-app").dataset.order;
+        const isAddMode = !!existingOrder;
         let cart = {};
         let menuData = {};
         let currency = "₹";
@@ -371,6 +373,7 @@
 				<h1>🍽️ ${data.restaurant_name}</h1>
 				<p>${data.address || "Welcome! Browse our menu & order"}</p>
 				${tableInfo ? `<div class="go-table-badge">🪑 Table ${tableInfo.table_number}</div>` : ""}
+				${isAddMode ? `<div class="go-table-badge" style="background:#7DCE94;">➕ Adding to ${existingOrder}</div>` : ""}
 			</div>
 
 			<div class="go-categories" id="go-categories">
@@ -402,7 +405,7 @@
 				</div>
 				<input type="text" class="go-customer-input" id="go-customer-name" placeholder="Your name (optional)">
 				<textarea class="go-customer-input" id="go-notes" placeholder="Special instructions (optional)" rows="2" style="resize:none;"></textarea>
-				<button class="go-place-order" id="go-place-btn">Place Order</button>
+				<button class="go-place-order" id="go-place-btn">${isAddMode ? 'Add to Order' : 'Place Order'}</button>
 			</div>
 		`;
             document.getElementById("go-loading").remove();
@@ -523,31 +526,52 @@
 
             let btn = document.getElementById("go-place-btn");
             btn.disabled = true;
-            btn.textContent = "Placing order...";
+            btn.textContent = isAddMode ? "Adding items..." : "Placing order...";
 
             let orderItems = items.map(i => ({ menu_item: i.menu_item, quantity: i.qty }));
-            let customerName = document.getElementById("go-customer-name").value;
-            let notes = document.getElementById("go-notes").value;
 
-            frappe.call({
-                method: "restaurant_management.restaurant_management.guest_api.place_guest_order",
-                args: {
-                    items: JSON.stringify(orderItems),
-                    table: table || "",
-                    customer_name: customerName,
-                    notes: notes,
-                },
-                callback: function (r) {
-                    if (r.message) {
-                        // Redirect to status page
-                        window.location.href = `/restaurant/status?order=${r.message.order_name}`;
+            if (isAddMode) {
+                // APPEND mode — add items to existing order
+                frappe.call({
+                    method: "restaurant_management.restaurant_management.guest_api.add_items_to_order",
+                    args: {
+                        order_name: existingOrder,
+                        items: JSON.stringify(orderItems),
+                    },
+                    callback: function (r) {
+                        if (r.message && r.message.status === "success") {
+                            window.location.href = `/restaurant/status?order=${existingOrder}`;
+                        }
+                    },
+                    error: function () {
+                        btn.disabled = false;
+                        btn.textContent = "Add to Order";
                     }
-                },
-                error: function () {
-                    btn.disabled = false;
-                    btn.textContent = "Place Order";
-                }
-            });
+                });
+            } else {
+                // NEW order mode
+                let customerName = document.getElementById("go-customer-name").value;
+                let notes = document.getElementById("go-notes").value;
+
+                frappe.call({
+                    method: "restaurant_management.restaurant_management.guest_api.place_guest_order",
+                    args: {
+                        items: JSON.stringify(orderItems),
+                        table: table || "",
+                        customer_name: customerName,
+                        notes: notes,
+                    },
+                    callback: function (r) {
+                        if (r.message) {
+                            window.location.href = `/restaurant/status?order=${r.message.order_name}`;
+                        }
+                    },
+                    error: function () {
+                        btn.disabled = false;
+                        btn.textContent = "Place Order";
+                    }
+                });
+            }
         }
     });
 </script>

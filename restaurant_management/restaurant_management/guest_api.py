@@ -143,7 +143,49 @@ def get_order_status(order_name):
 
 
 @frappe.whitelist(allow_guest=True)
+def add_items_to_order(order_name, items):
+	"""Add more items to an existing order. No login required."""
+	if isinstance(items, str):
+		items = json.loads(items)
+
+	if not items:
+		frappe.throw(_("Please add at least one item"))
+
+	order = frappe.get_doc("Restaurant Order", order_name)
+
+	# Only allow adding items if order is still active
+	if order.status in ["Completed", "Cancelled"]:
+		frappe.throw(_("Cannot add items — order is already {0}").format(order.status))
+
+	for item in items:
+		menu_item = frappe.get_doc("Restaurant Menu Item", item.get("menu_item"))
+		order.append("items", {
+			"menu_item": menu_item.name,
+			"item_name": menu_item.item_name,
+			"quantity": cint(item.get("quantity", 1)),
+			"rate": menu_item.price,
+		})
+
+	# Recalculate totals
+	order.calculate_totals()
+
+	# Reset to In Progress so kitchen sees the new items
+	if order.status in ["Preparing", "Ready"]:
+		order.status = "In Progress"
+
+	order.save(ignore_permissions=True)
+
+	return {
+		"status": "success",
+		"message": _("Items added to {0}").format(order_name),
+		"total_amount": order.total_amount,
+		"order_status": order.status,
+	}
+
+
+@frappe.whitelist(allow_guest=True)
 def get_table_qr_data():
+
 	"""Get all tables with their QR code URLs for printing."""
 	tables = frappe.get_all(
 		"Restaurant Table",

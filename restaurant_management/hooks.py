@@ -35,6 +35,7 @@ guest_methods = {
 	"restaurant_management.restaurant_management.guest_api.place_guest_order": True,
 	"restaurant_management.restaurant_management.guest_api.get_order_status": True,
 	"restaurant_management.restaurant_management.guest_api.get_table_qr_data": True,
+	"restaurant_management.restaurant_management.guest_api.add_items_to_order": True,
 }
 
 # Installation
