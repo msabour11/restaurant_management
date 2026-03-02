@@ -13,6 +13,9 @@
         "auto_create_sales_invoice",
         "column_break_2",
         "whatsapp_number",
+        "section_break_upi",
+        "upi_id",
+        "upi_merchant_name",
         "section_break_receipt",
         "receipt_header",
         "receipt_footer"
@@ -67,6 +70,24 @@
             "fieldtype": "Data",
             "label": "WhatsApp Number",
             "description": "Phone number for sending revenue reports via WhatsApp"
+        },
+        {
+            "fieldname": "section_break_upi",
+            "fieldtype": "Section Break",
+            "label": "UPI Payment",
+            "description": "Configure UPI for customer self-payment via QR ordering"
+        },
+        {
+            "fieldname": "upi_id",
+            "fieldtype": "Data",
+            "label": "UPI ID",
+            "description": "Your UPI ID (e.g. restaurant@upi, 9876543210@ybl)"
+        },
+        {
+            "fieldname": "upi_merchant_name",
+            "fieldtype": "Data",
+            "label": "UPI Merchant Name",
+            "description": "Name shown in UPI payment app"
         },
         {
             "fieldname": "section_break_receipt",

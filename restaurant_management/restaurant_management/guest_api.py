@@ -110,9 +110,26 @@ def get_order_status(order_name):
 	if order.table:
 		table_number = frappe.db.get_value("Restaurant Table", order.table, "table_number")
 
-	# Get settings for currency
-	currency = frappe.db.get_single_value("Restaurant Settings", "default_currency_symbol") or "₹"
-	restaurant_name = frappe.db.get_single_value("Restaurant Settings", "restaurant_name") or "Restaurant"
+	# Get settings for currency and UPI
+	settings = frappe.get_single("Restaurant Settings")
+	currency = settings.default_currency_symbol or "₹"
+	restaurant_name = settings.restaurant_name or "Restaurant"
+
+	# UPI payment info — only when order is Served and unpaid
+	upi_info = None
+	if order.status == "Served" and order.payment_status != "Paid" and settings.upi_id:
+		upi_link = "upi://pay?pa={upi_id}&pn={name}&am={amount}&cu=INR&tn={note}".format(
+			upi_id=settings.upi_id,
+			name=(settings.upi_merchant_name or restaurant_name).replace(" ", "%20"),
+			amount=order.total_amount,
+			note="Order%20{0}".format(order.name),
+		)
+		upi_info = {
+			"upi_id": settings.upi_id,
+			"merchant_name": settings.upi_merchant_name or restaurant_name,
+			"upi_link": upi_link,
+			"amount": order.total_amount,
+		}
 
 	# Status timeline
 	status_flow = ["In Progress", "Preparing", "Ready", "Served", "Completed"]
@@ -128,6 +145,7 @@ def get_order_status(order_name):
 			"name": order.name,
 			"status": order.status,
 			"order_type": order.order_type,
+			"table": order.table,
 			"table_number": table_number,
 			"total_amount": order.total_amount,
 			"total_qty": order.total_qty,
@@ -139,7 +157,23 @@ def get_order_status(order_name):
 		"timeline": timeline,
 		"currency_symbol": currency,
 		"restaurant_name": restaurant_name,
+		"upi": upi_info,
 	}
+
+
+@frappe.whitelist(allow_guest=True)
+def confirm_guest_payment(order_name):
+	"""Guest confirms UPI payment — auto-creates Sales Invoice + Payment Entry."""
+	order = frappe.get_doc("Restaurant Order", order_name)
+
+	if order.payment_status == "Paid":
+		return {"status": "already_paid", "message": _("Payment already recorded")}
+
+	# Import the helper from api.py to reuse auto invoice + payment entry logic
+	from restaurant_management.restaurant_management.api import collect_payment
+	result = collect_payment(order_name, payment_mode="UPI")
+
+	return result
 
 
 @frappe.whitelist(allow_guest=True)

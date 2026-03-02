@@ -254,6 +254,42 @@
         text-align: center;
         text-decoration: none;
     }
+
+    .os-upi-card {
+        background: linear-gradient(135deg, #FFF8E1, #FFF3E0);
+        border: 2px solid #FFD54F;
+    }
+
+    .os-upi-btn {
+        display: block;
+        padding: 14px;
+        background: linear-gradient(135deg, #4CAF50, #388E3C);
+        color: #fff;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        margin-bottom: 5px;
+    }
+
+    .os-confirm-btn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background: var(--os-primary);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .os-confirm-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 </style>
 
 <script>
@@ -365,13 +401,46 @@
 			</div>
 		`;
 
-            // Add More Items button — only for active orders
-            if (!["Completed", "Cancelled"].includes(order.status)) {
-                let addUrl = window.location.origin + "/restaurant/order?table=" + (data.order.table || "") + "&order=" + order.name;
+            // UPI Pay section — when order is Served and unpaid
+            if (data.upi && order.payment_status !== 'Paid') {
+                html += `
+				<div class="os-card os-upi-card">
+					<h3>💳 Pay Now</h3>
+					<p style="color:#666;font-size:13px;margin:0 0 15px;">
+						Pay <strong>${data.currency_symbol}${parseFloat(data.upi.amount).toFixed(2)}</strong> to <strong>${data.upi.merchant_name}</strong>
+					</p>
+					<a href="${data.upi.upi_link}" class="os-upi-btn" id="upi-pay-btn">
+						📱 Pay ${data.currency_symbol}${parseFloat(data.upi.amount).toFixed(2)} via UPI
+					</a>
+					<p style="color:#aaa;font-size:11px;margin:10px 0 5px;">UPI ID: ${data.upi.upi_id}</p>
+					<p style="color:#888;font-size:12px;margin:8px 0 12px;">
+						After completing payment in your UPI app, tap below:
+					</p>
+					<button class="os-confirm-btn" id="confirm-paid-btn" data-order="${order.name}">
+						✅ I have paid
+					</button>
+				</div>
+			`;
+            }
+
+            // Payment success
+            if (order.payment_status === 'Paid' && order.status === 'Served') {
+                html += `
+				<div class="os-card" style="text-align:center;background:#E8F5E9;">
+					<p style="font-size:36px;margin:0 0 8px;">✅</p>
+					<p style="font-weight:700;color:#2E7D32;margin:0;">Payment Received!</p>
+					<p style="color:#666;font-size:13px;margin:5px 0 0;">Thank you. Your invoice has been generated.</p>
+				</div>
+			`;
+            }
+
+            // Add More Items — only for active unpaid orders
+            if (!["Completed", "Cancelled"].includes(order.status) && order.payment_status !== 'Paid') {
+                let addUrl = window.location.origin + "/restaurant/order?table=" + (order.table || "") + "&order=" + order.name;
                 html += `<a class="os-add-items" href="${addUrl}">➕ Add More Items</a>`;
             }
 
-            // Order again button for completed orders
+            // Order again for completed orders
             if (order.status === "Completed") {
                 let baseUrl = window.location.origin;
                 let tableParam = order.table_number ? `?table=${order.table_number}` : "";
@@ -379,6 +448,29 @@
             }
 
             document.getElementById("order-status-app").innerHTML = html;
+
+            // Bind confirm payment button
+            let confirmBtn = document.getElementById("confirm-paid-btn");
+            if (confirmBtn) {
+                confirmBtn.addEventListener("click", function () {
+                    let btn = this;
+                    btn.disabled = true;
+                    btn.textContent = "Verifying payment...";
+                    frappe.call({
+                        method: "restaurant_management.restaurant_management.guest_api.confirm_guest_payment",
+                        args: { order_name: btn.dataset.order },
+                        callback: function (r) {
+                            if (r.message) {
+                                loadStatus();
+                            }
+                        },
+                        error: function () {
+                            btn.disabled = false;
+                            btn.textContent = "✅ I have paid";
+                        }
+                    });
+                });
+            }
         }
     });
 </script>
