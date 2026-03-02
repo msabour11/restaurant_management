@@ -459,3 +459,43 @@ def get_bill_data(order_name):
 </html>"""
 
 	return html
+
+
+@frappe.whitelist()
+def get_kitchen_orders():
+	"""Get all active (In Progress) orders for the kitchen display."""
+	orders = frappe.get_all(
+		"Restaurant Order",
+		filters={"status": "In Progress"},
+		fields=["name", "order_type", "table", "order_date", "notes", "total_amount"],
+		order_by="order_date asc",
+	)
+
+	result = []
+	for order in orders:
+		# Get order items
+		items = frappe.get_all(
+			"Restaurant Order Item",
+			filters={"parent": order.name},
+			fields=["item_name", "quantity"],
+			order_by="idx asc",
+		)
+
+		# Get table number
+		table_number = None
+		if order.table:
+			table_number = frappe.db.get_value("Restaurant Table", order.table, "table_number")
+
+		result.append({
+			"name": order.name,
+			"order_type": order.order_type,
+			"table": order.table,
+			"table_number": table_number,
+			"order_date": str(order.order_date),
+			"notes": order.notes,
+			"total_amount": order.total_amount,
+			"items": items,
+		})
+
+	return result
+

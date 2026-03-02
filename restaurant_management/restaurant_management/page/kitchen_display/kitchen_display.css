@@ -1,0 +1,339 @@
+/* Kitchen Display System (KDS) Styles */
+
+/* ===== Reset for Kitchen Display ===== */
+#kitchen-display-app {
+    min-height: 100vh;
+    background: #1a1a2e;
+    margin: -15px;
+    padding: 0;
+}
+
+/* ===== KDS Header ===== */
+.kds-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #16213e, #0f3460);
+    border-bottom: 3px solid #e94560;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.kds-title {
+    color: #fff;
+    margin: 0;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+.kds-subtitle {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+    margin-left: 10px;
+}
+
+.kds-header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.kds-clock {
+    color: #e94560;
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.kds-badge {
+    background: #e94560;
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
+.btn-kds-action {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-kds-action:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #e94560;
+}
+
+/* ===== Orders Grid ===== */
+.kds-orders {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+    padding: 25px;
+    min-height: calc(100vh - 80px);
+}
+
+/* ===== Empty State ===== */
+.kds-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 80px 20px;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.kds-empty i {
+    margin-bottom: 20px;
+    color: #7DCE94;
+}
+
+.kds-empty h3 {
+    font-size: 28px;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.kds-empty p {
+    font-size: 16px;
+}
+
+/* ===== Order Card ===== */
+.kds-order-card {
+    background: #16213e;
+    border-radius: 14px;
+    overflow: hidden;
+    border-left: 5px solid;
+    transition: all 0.4s ease;
+    animation: slideIn 0.4s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.kds-done-animation {
+    animation: doneSlide 0.5s ease forwards;
+}
+
+@keyframes doneSlide {
+    to {
+        opacity: 0;
+        transform: scale(0.8) translateY(-20px);
+    }
+}
+
+/* Urgency levels */
+.urgency-normal {
+    border-left-color: #7DCE94;
+}
+
+.urgency-warning {
+    border-left-color: #FFD93D;
+    animation: pulseWarning 2s infinite;
+}
+
+.urgency-critical {
+    border-left-color: #e94560;
+    animation: pulseCritical 1s infinite;
+}
+
+@keyframes pulseWarning {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 rgba(255, 217, 61, 0);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(255, 217, 61, 0.2);
+    }
+}
+
+@keyframes pulseCritical {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 rgba(233, 69, 96, 0);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(233, 69, 96, 0.3);
+    }
+}
+
+/* ===== Order Header ===== */
+.kds-order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px 10px;
+}
+
+.kds-order-id {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.kds-table-badge {
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.kds-table-badge.dine-in {
+    background: rgba(125, 206, 148, 0.15);
+    color: #7DCE94;
+}
+
+.kds-table-badge.parcel {
+    background: rgba(246, 177, 122, 0.15);
+    color: #F6B17A;
+}
+
+/* ===== Order Timer ===== */
+.kds-order-timer {
+    padding: 0 16px 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.urgency-normal .kds-order-timer {
+    color: #7DCE94;
+}
+
+.urgency-warning .kds-order-timer {
+    color: #FFD93D;
+}
+
+.urgency-critical .kds-order-timer {
+    color: #e94560;
+}
+
+/* ===== Order Items ===== */
+.kds-order-items {
+    padding: 0 16px 12px;
+}
+
+.kds-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.kds-item:last-child {
+    border-bottom: none;
+}
+
+.kds-item-qty {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    min-width: 35px;
+    text-align: center;
+    margin-right: 12px;
+}
+
+.kds-item-name {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* ===== Order Notes ===== */
+.kds-order-notes {
+    padding: 8px 16px;
+    margin: 0 16px 10px;
+    background: rgba(255, 217, 61, 0.1);
+    border-radius: 8px;
+    color: #FFD93D;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.kds-order-notes i {
+    margin-right: 6px;
+}
+
+/* ===== Order Actions ===== */
+.kds-order-actions {
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.btn-kds-done {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #7DCE94, #5bb578);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+}
+
+.btn-kds-done:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(125, 206, 148, 0.4);
+    background: linear-gradient(135deg, #5bb578, #7DCE94);
+}
+
+.btn-kds-done:active {
+    transform: translateY(0);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .kds-orders {
+        grid-template-columns: 1fr;
+        padding: 15px;
+        gap: 12px;
+    }
+
+    .kds-header {
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px 15px;
+    }
+
+    .kds-clock {
+        font-size: 16px;
+    }
+}
+
+/* Large screens — 4+ columns */
+@media (min-width: 1400px) {
+    .kds-orders {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}

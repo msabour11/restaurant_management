@@ -1,6 +1,6 @@
 {
     "charts": [],
-    "content": "[{\"id\":\"gkh3xq\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Restaurant Management</b></span>\",\"col\":12}},{\"id\":\"k94nfd\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant POS\",\"col\":4}},{\"id\":\"p83mxd\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Order\",\"col\":4}},{\"id\":\"r72bvt\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Table\",\"col\":4}},{\"id\":\"s51czw\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Menu Item\",\"col\":4}},{\"id\":\"t40ayp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Revenue\",\"col\":4}},{\"id\":\"u39bxn\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Settings\",\"col\":4}}]",
+    "content": "[{\"id\":\"gkh3xq\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Restaurant Management</b></span>\",\"col\":12}},{\"id\":\"k94nfd\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant POS\",\"col\":4}},{\"id\":\"v28kwm\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Kitchen Display\",\"col\":4}},{\"id\":\"p83mxd\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Order\",\"col\":4}},{\"id\":\"r72bvt\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Table\",\"col\":4}},{\"id\":\"s51czw\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Menu Item\",\"col\":4}},{\"id\":\"t40ayp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Revenue\",\"col\":4}},{\"id\":\"u39bxn\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Settings\",\"col\":4}}]",
     "creation": "2026-03-02 10:00:00.000000",
     "custom_blocks": [],
     "doctype": "Workspace",
@@ -17,6 +17,16 @@
             "label": "Restaurant POS",
             "link_count": 0,
             "link_to": "restaurant-pos",
+            "link_type": "Page",
+            "onboard": 1,
+            "type": "Link"
+        },
+        {
+            "hidden": 0,
+            "is_query_report": 0,
+            "label": "Kitchen Display",
+            "link_count": 0,
+            "link_to": "kitchen-display",
             "link_type": "Page",
             "onboard": 1,
             "type": "Link"
@@ -88,6 +98,12 @@
             "color": "Orange",
             "label": "Restaurant POS",
             "link_to": "restaurant-pos",
+            "type": "Page"
+        },
+        {
+            "color": "Red",
+            "label": "Kitchen Display",
+            "link_to": "kitchen-display",
             "type": "Page"
         },
         {
